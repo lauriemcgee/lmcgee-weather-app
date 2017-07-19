@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app='weatherApp'>
 <head>
   <meta charset="UTF-8">
   <title>Weather App</title>
   <script src="bundle.js"></script>
 </head>
 <body>
-  
+<div ng-controller='weatherCtrl'>
+  {{ channelInfo.heading }}
+  {{ channelInfo.subheading }}
+</div>
 </body>
 </html>
