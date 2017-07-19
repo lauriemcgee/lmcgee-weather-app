@@ -1,0 +1,31 @@
+{
+  "name": "lmcgee-weather-app",
+  "version": "1.0.0",
+  "description": "weather app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -p",
+    "server": "webpack-dev-server --hot --inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lauriemcgee/lmcgee-weather-app.git"
+  },
+  "author": "Laurie McGee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lauriemcgee/lmcgee-weather-app/issues"
+  },
+  "homepage": "https://github.com/lauriemcgee/lmcgee-weather-app#readme",
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "webpack": "^3.3.0",
+    "webpack-dev-server": "^2.5.1"
+  },
+  "dependencies": {
+    "angular": "^1.6.4"
+  }
+}
