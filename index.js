@@ -74,14 +74,16 @@ angular.module("weatherApp", [])
   // SET THE DATA TO THE SCOPE IN THE CONTROLLER, ENSURING HTTP IS COMPLETED AFTR GEOLOCATION
 
 .controller('WeatherCtrl', ['getLocation', 'makeWeatherRequest', '$scope', function(getLocation, makeWeatherRequest, $scope) {
+  
   getLocation.getCurrentPosition().then(function(positionData) {
     $scope.lat = parseFloat(positionData.coords.latitude);
     $scope.lon = parseFloat(positionData.coords.longitude);
     console.log($scope.lat);
     console.log($scope.lon);
   },
+  // IF USER DOESN'T WANT TO GIVE US THEIR LOCATION, THEN SO BE IT
   function(err) {
-    console.log(err); //User Denid Location -> Set Manually
+    console.log(err); 
     $scope.lat = 41.12345;
     $scope.lon = -87.123456;
   }).then(function() {
@@ -90,6 +92,8 @@ angular.module("weatherApp", [])
       $scope.weatherTemp = locationData.data.main.temp;
       $scope.humidity = locationData.data.main.humidity;
       $scope.cloudCover = locationData.data.weather[0].description;
+      $scope.dataLoad = !$scope.dataLoad;
+      $scope.dataReady = !$scope.dataReady;
       console.log($scope.weatherTemp);
       console.log($scope.humidity);
       console.log($scope.cloudCover);

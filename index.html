@@ -1,17 +1,28 @@
 <!DOCTYPE html>
-<html lang="en" ng-app='weatherApp'>
+<html lang="en" ng-app='weatherApp' ng-init="dataLoad = true; dataReady = false;">
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="index.css">
   <title>Weather App</title>
   <script src="bundle.js"></script>
 </head>
 <body>
   <div ng-controller = 'WeatherCtrl'>
-    <ul>
-      <li> Temp: {{ weatherTemp }} </li>
-      <li> Cloud Cover: {{ cloudCover }} </li>
-      <li> Humidity: {{ humidity }} </li>
-    </ul> 
+    <div class="wrapper">
+      <div class="container">
+      <div ng-if="dataReady" class="top">
+        <h1>HERE'S YOUR LOCAL WEATHER!</h1>
+      </div>
+      <div ng-if="dataLoad" class="top">
+        <h1>WAIT FOR IT...</h1>
+      </div>
+        <ul ng-if="dataReady">
+          <li> Temp: {{ weatherTemp }} </li>
+          <li> Cloud Cover: {{ cloudCover }} </li>
+          <li> Humidity: {{ humidity }} </li>
+        </ul> 
+      </div>
+    </div>
   </div>
 </body>
 </html>
