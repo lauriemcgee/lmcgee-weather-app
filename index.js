@@ -151,7 +151,7 @@ angular.module("weatherApp", [])
           $scope.days.push({day: moment($scope.forecastedDay[i].dt_txt).format('ddd').toUpperCase() });
         }
 
-// BIND THE TWO FOR NG REPEAT DIRECTIVE
+// BIND THE TWO TOGETHER FOR NG REPEAT DIRECTIVE
 
         $scope.repeatData = $scope.forecastedDay.map(function(value, index) {
           return {

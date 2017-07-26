@@ -14,3 +14,5 @@ npm run server
 ```
 
 Your newly created weather app will now be running in your localhost!
+
+Please note that the daily averages are currently averages per 3-hour period.  This will be updated shortly!
