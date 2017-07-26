@@ -2,7 +2,7 @@ var angular = require('angular');
 var moment = require('moment');
 angular.module("weatherApp", [])
 
-// SET UP A FACTORY FOR RECIEVING DEFERRED GEOLOCATION PROMISE
+// FACTORY TO MAKE DEFERRED PROMISE REQUEST FOR CURRENT WEATHER
 
   .factory('getLocation', ['$q', '$window',  function($q, $window) {
     var currentLocation = {};
@@ -33,7 +33,7 @@ angular.module("weatherApp", [])
     
   }])
 
-  // FACTORY TO MAKE REQUEST FOR CURRENT WEATHER
+// FACTORY TO MAKE DEFERRED PROMISE REQUEST FOR CURRENT WEATHER
 
   .factory('makeWeatherRequest', ['getLocation', '$http', '$q', function(getLocation, $http, $q) {
     var currentWeather = {};
@@ -63,7 +63,7 @@ angular.module("weatherApp", [])
   }])
 
 
-  // FACTORY TO MAKE REQUEST FOR FORECASTED WEATHER
+// FACTORY TO MAKE DEFERRED PROMISE REQUEST FOR FORECASTED WEATHER
 
 .factory('makeForecastRequest', ['getLocation', '$http', '$q', function(getLocation, $http, $q) {
   var forecastWeather = {};
@@ -100,10 +100,11 @@ angular.module("weatherApp", [])
 }])
 
 
-  // SET THE DATA TO THE SCOPE IN THE CONTROLLER, ENSURING HTTP REQUEST IS COMPLETED AFTR GEOLOCATION IS RECIEVED
+  
 
 .controller('WeatherCtrl', ['getLocation', 'makeWeatherRequest', 'makeForecastRequest', '$scope', function(getLocation, makeWeatherRequest, makeForecastRequest, $scope) {
-  
+
+// SET THE DATA TO THE SCOPE IN THE CONTROLLER
   getLocation.getCurrentPosition().then(function(positionData) {
     $scope.lat = parseFloat(positionData.coords.latitude);
     $scope.lon = parseFloat(positionData.coords.longitude);
@@ -114,6 +115,7 @@ angular.module("weatherApp", [])
     $scope.lat = 41.12345;
     $scope.lon = -87.123456;
   })
+  // COMPLETE HTTP REQUEST FOR CURRENT WEATHER AFTER GEOLOCATION CALL
     .then(function() {
       makeWeatherRequest.getCurrentWeather($scope.lat, $scope.lon).then(locationData => {
         $scope.weatherTemp = Math.floor(locationData.data.main.temp);
@@ -121,23 +123,35 @@ angular.module("weatherApp", [])
         $scope.tempMin = Math.floor(locationData.data.main.temp_min);
         $scope.humidity = Math.floor(locationData.data.main.humidity);
         $scope.cloudCover = locationData.data.weather[0].description;
+
+// ONCE WE HAVE SOME DATA, LET THE USER SEE IT 
+
         $scope.dataLoad = !$scope.dataLoad;
         $scope.dataReady = !$scope.dataReady;
       })
 
+// COMPLETE HTTP REQUEST FOR FORECASTED WEATHER AFTER CURRENT WEATHER CALL
     .then(function() {
       makeForecastRequest.getForecastWeather($scope.lat, $scope.lon).then(locationData => {
         $scope.forecastDatas = locationData.data;
         var forecastDatas = locationData.data.list;
+
+// THESE CALCULATIONS SHOULD BE LOCATED ELSEWHERE, POSSIBLY A SERVICE
+// GRAB FORECASTS FOR EACH DAY (FORECASTS ARE GIVEN EVERY 3-HOURS)
+
         $scope.forecastedDay = [];
-        for (var i = 0; i < forecastDatas.length; i+=8) {
+        for (var i = 0; i < forecastDatas.length; i += 8) {
           $scope.forecastedDay.push(forecastDatas[i]);
         }
         
+// ATTACH NEW COLLECTION OF FORMATTED DAYS TO THE DATA OBJECTS
+
         $scope.days = [];
         for (i = 0; i < $scope.forecastedDay.length; i++) {
           $scope.days.push({day: moment($scope.forecastedDay[i].dt_txt).format('ddd').toUpperCase() });
         }
+
+// BIND THE TWO FOR NG REPEAT DIRECTIVE
 
         $scope.repeatData = $scope.forecastedDay.map(function(value, index) {
           return {
@@ -145,11 +159,6 @@ angular.module("weatherApp", [])
               value: $scope.days[index]
           };
         });
-
-        console.log($scope.repeatData);
-        console.log($scope.days);
-        console.log($scope.forecastedDay);
-        console.log($scope.forecastDatas);
       });
     });
     });
