@@ -1,8 +1,8 @@
-#HELLO AND WELCOME TO MY ANGULARJS WEATHER APP!
+# HELLO AND WELCOME TO MY ANGULARJS WEATHER APP!
 
-##My *first* AngularJS app.
+## My *first* AngularJS app.
 
-###To run the app, navigate to where you'd like it to be in your terminal, and run:
+### To run the app, navigate to where you'd like it to be in your terminal, and run:
 
 ```
 git clone https://github.com/lauriemcgee/lmcgee-weather-app.git
