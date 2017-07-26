@@ -9,7 +9,7 @@ body {
 
 .container {
   width: 612px;
-  height: 412px;
+  height: 100%;
   display: block;
   background-color: #313e45;
   border-radius: 25px;

@@ -10,17 +10,28 @@
   <div ng-controller = 'WeatherCtrl'>
     <div class="wrapper">
       <div class="container">
-      <div ng-if="dataReady" class="top">
-        <h1>HERE'S YOUR LOCAL WEATHER!</h1>
-      </div>
-      <div ng-if="dataLoad" class="top">
-        <h1>WAIT FOR IT...</h1>
-      </div>
+        <div ng-if="dataReady" class="top">
+          <h1>HERE'S YOUR LOCAL WEATHER!</h1>
+        </div>
+        <div ng-if="dataLoad" class="top">
+          <h1>WAIT FOR IT...</h1>
+        </div>
         <ul ng-if="dataReady">
-          <li> Temp: {{ weatherTemp }} </li>
-          <li> Cloud Cover: {{ cloudCover }} </li>
-          <li> Humidity: {{ humidity }} </li>
-        </ul> 
+          <li> <h3>Current Temp:</h3> <p>{{ weatherTemp }}</p> </li>
+          <li> <h4>Today's High:</h4> <p>{{ tempMax }}</p> </li>
+          <li> <h4>Today's Low:</h4> <p>{{ tempMin }}</p> </li>
+          <li> <h4>Cloud Cover:</h4> {{ cloudCover }} </li>
+          <li> <h4>Humidity:</h4> {{ humidity }} </li>
+        </ul>
+        <div ng-if="dataReady" ng-repeat="forecastData in forecastDatas">
+          <h3>{{ day }}</h3>
+          <ul>
+            <li><h4>High: </h4> <p>{{ forecastData.main.temp_max }}</p></li>
+            <li><h4>Low: </h4>  <p>{{ forecastData.main.temp_min }}</p></li>
+            <li><h4>Cloud Cover: </h4> <p>{{ forecastData.weather[0].description }}</p></li>
+          </ul>
+        
+        </div>
       </div>
     </div>
   </div>

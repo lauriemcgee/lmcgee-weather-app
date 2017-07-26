@@ -1,4 +1,5 @@
 var angular = require('angular');
+var moment = require('moment');
 angular.module("weatherApp", [])
 
 // SET UP A FACTORY FOR RECIEVING DEFERRED GEOLOCATION PROMISE
@@ -32,73 +33,115 @@ angular.module("weatherApp", [])
     
   }])
 
-  // SET UP A FACTORY FOR RECIEVING DEFERRED HTTP PROMISE, DEPENDENT ON RECIEVING GEOLOCATION
+  // FACTORY TO MAKE REQUEST FOR CURRENT WEATHER
 
   .factory('makeWeatherRequest', ['getLocation', '$http', '$q', function(getLocation, $http, $q) {
     var currentWeather = {};
-    
-
     currentWeather.getCurrentWeather = function(lat, lon) {
       var apiKey = '0dd8bb79c45efccc5e6993ee4b787e33';
       var openWeatherUrl = 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&units=imperial';
-      
-
       var deferred = $q.defer();
       
-
       if (!$http.get(openWeatherUrl)) {
         deferred.reject('Something went wrong! Sorry!');
-      
 
       } else {
       
-
         $http.get(openWeatherUrl).then(
      
-          function successCallback(position) {
-            deferred.resolve(position);
+          function successCallback(data) {
+            deferred.resolve(data);
           },
      
           function errorCallback(err) {
             deferred.reject(err);
           });
       }
-      
-
       return deferred.promise;
     };
     return currentWeather;
   }])
 
 
-  // SET THE DATA TO THE SCOPE IN THE CONTROLLER, ENSURING HTTP IS COMPLETED AFTR GEOLOCATION
+  // FACTORY TO MAKE REQUEST FOR FORECASTED WEATHER
 
-.controller('WeatherCtrl', ['getLocation', 'makeWeatherRequest', '$scope', function(getLocation, makeWeatherRequest, $scope) {
+.factory('makeForecastRequest', ['getLocation', '$http', '$q', function(getLocation, $http, $q) {
+  var forecastWeather = {};
+
+  forecastWeather.getForecastWeather = function(lat, lon) {
+    var apiKey = '0dd8bb79c45efccc5e6993ee4b787e33';
+    var forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&cnt=5&units=imperial';
+    var deferred = $q.defer();
+      
+
+    if (!$http.get(forecastUrl)) {
+      deferred.reject('Something went wrong! Sorry!');
+    
+
+    } else {
+    
+
+      $http.get(forecastUrl).then(
+   
+        function successCallback(data) {
+          deferred.resolve(data);
+        },
+   
+        function errorCallback(err) {
+          deferred.reject(err);
+        });
+    }
+    
+    return deferred.promise;
+
+  };
+  return forecastWeather;
+
+}])
+
+
+  // SET THE DATA TO THE SCOPE IN THE CONTROLLER, ENSURING HTTP REQUEST IS COMPLETED AFTR GEOLOCATION IS RECIEVED
+
+.controller('WeatherCtrl', ['getLocation', 'makeWeatherRequest', 'makeForecastRequest', '$scope', function(getLocation, makeWeatherRequest, makeForecastRequest, $scope) {
   
   getLocation.getCurrentPosition().then(function(positionData) {
     $scope.lat = parseFloat(positionData.coords.latitude);
     $scope.lon = parseFloat(positionData.coords.longitude);
-    console.log($scope.lat);
-    console.log($scope.lon);
   },
   // IF USER DOESN'T WANT TO GIVE US THEIR LOCATION, THEN SO BE IT
   function(err) {
     console.log(err); 
     $scope.lat = 41.12345;
     $scope.lon = -87.123456;
-  }).then(function() {
-    makeWeatherRequest.getCurrentWeather($scope.lat, $scope.lon).then(locationData => {
-      console.log(locationData);
-      $scope.weatherTemp = locationData.data.main.temp;
-      $scope.humidity = locationData.data.main.humidity;
-      $scope.cloudCover = locationData.data.weather[0].description;
-      $scope.dataLoad = !$scope.dataLoad;
-      $scope.dataReady = !$scope.dataReady;
-      console.log($scope.weatherTemp);
-      console.log($scope.humidity);
-      console.log($scope.cloudCover);
+  })
+    .then(function() {
+      makeWeatherRequest.getCurrentWeather($scope.lat, $scope.lon).then(locationData => {
+        console.log(locationData);
+        $scope.weatherTemp = Math.floor(locationData.data.main.temp);
+        $scope.tempMax = Math.floor(locationData.data.main.temp_max);
+        $scope.tempMin = Math.floor(locationData.data.main.temp_min);
+        $scope.humidity = Math.floor(locationData.data.main.humidity);
+        $scope.cloudCover = locationData.data.weather[0].description;
+        $scope.dataLoad = !$scope.dataLoad;
+        $scope.dataReady = !$scope.dataReady;
+      })
+
+    .then(function() {
+      makeForecastRequest.getForecastWeather($scope.lat, $scope.lon).then(locationData => {
+        var weatherData = locationData.data.list;
+        console.log(weatherData);
+        // forecastDatas.forecast = function(data) {
+        //   this.data = data;
+        // };
+        // forecastDatas.forecast.prototype.hasOwnProperty.toDay = function(date) {
+        //   return new moment(date).format('ddd');
+        // };
+        $scope.forecastDatas = locationData.data.list;
+        console.log($scope.forecastDatas);
+      });
+
     });
-  });
+    });
 }]);
 
 
