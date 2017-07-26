@@ -136,6 +136,18 @@ angular.module("weatherApp", [])
         $scope.forecastDatas = locationData.data;
         var forecastDatas = locationData.data.list;
 
+        const max = forecastDatas.reduce(function(prev, current) {
+          return (prev.main.temp_max > current.main.temp_max) ? prev : current;
+        }); //returns object
+
+        console.log(max);
+
+        const min = forecastDatas.reduce(function(prev, current) {
+          return (prev.main.temp_min < current.main.temp_min) ? prev : current;
+        }); //returns object
+
+        console.log(min);
+
 // THESE CALCULATIONS SHOULD BE LOCATED ELSEWHERE, POSSIBLY A SERVICE
 // GRAB FORECASTS FOR EACH DAY (FORECASTS ARE GIVEN EVERY 3-HOURS)
 
