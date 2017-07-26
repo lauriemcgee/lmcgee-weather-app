@@ -136,15 +136,16 @@ angular.module("weatherApp", [])
         $scope.forecastDatas = locationData.data;
         var forecastDatas = locationData.data.list;
 
+// STARTING TO WORK ON GETTING THE MAX/MIN DAILY
         const max = forecastDatas.reduce(function(prev, current) {
           return (prev.main.temp_max > current.main.temp_max) ? prev : current;
-        }); //returns object
+        }); 
 
         console.log(max);
 
         const min = forecastDatas.reduce(function(prev, current) {
           return (prev.main.temp_min < current.main.temp_min) ? prev : current;
-        }); //returns object
+        }); 
 
         console.log(min);
 
