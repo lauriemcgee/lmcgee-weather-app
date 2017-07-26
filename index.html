@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" ng-app='weatherApp' ng-init="dataLoad = true; dataReady = false;">
 <head>
+<!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="index.css">
   <title>Weather App</title>
@@ -10,30 +19,44 @@
   <div ng-controller = 'WeatherCtrl'>
     <div class="wrapper">
       <div class="container">
-        <div ng-if="dataReady" class="top">
+        <div ng-if="dataReady" class="top row">
+          <div class="col-md-12">
+            <span class="glyphicon glyphicon-menu-hamburger" aria-label="eventualSearch"></span>
+            <span class="glyphicon glyphicon-search" aria-label="eventualSearch"></span>
+            <span class="glyphicon glyphicon-cloud" aria-label="eventualCheckForRain"></span>
+          </div>
+        </div>
+        <div ng-if="dataReady">
           <h1>HERE'S YOUR LOCAL WEATHER!</h1>
         </div>
         <div ng-if="dataLoad" class="top">
           <h1>WAIT FOR IT...</h1>
+          <div class="loader"></div>
         </div>
-        <ul ng-if="dataReady">
-          <li> <h3>Current Temp:</h3> <p>{{ weatherTemp }}</p> </li>
-          <li> <h4>Today's High:</h4> <p>{{ tempMax }}</p> </li>
-          <li> <h4>Today's Low:</h4> <p>{{ tempMin }}</p> </li>
+       
+        <div ng-if="dataReady" class="currentWeather">
+        <h3>Current Temp: {{ weatherTemp }}°F</h3>
+         <ul>
+          <li> <h4>Today's High:</h4> {{ tempMax }}°F</li>
+          <li> <h4>Today's Low:</h4>{{ tempMin }}°F</li>
           <li> <h4>Cloud Cover:</h4> {{ cloudCover }} </li>
           <li> <h4>Humidity:</h4> {{ humidity }} </li>
         </ul>
-        <div ng-if="dataReady" ng-repeat="forecastData in forecastDatas">
-          <h3>{{ day }}</h3>
-          <ul>
-            <li><h4>High: </h4> <p>{{ forecastData.main.temp_max }}</p></li>
-            <li><h4>Low: </h4>  <p>{{ forecastData.main.temp_min }}</p></li>
-            <li><h4>Cloud Cover: </h4> <p>{{ forecastData.weather[0].description }}</p></li>
+        </div>
+        <div ng-if="dataReady" ng-repeat="data in repeatData" >
+          <div class="forecastWeather">
+            <h4>{{ data.value.day }}</h4>
+          
+            <ul>
+              <li><h4>High: </h4> <p>{{ data.data.main.temp_max }}°F</p></li>
+              <li><h4>Low: </h4>  <p>{{ data.data.main.temp_min }}°F</p></li>
+              <li><h4>Cloud Cover: </h4> <p>{{ data.data.weather[0].description }}</p></li>
           </ul>
-        
+        </div>
         </div>
       </div>
     </div>
   </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 </body>
 </html>

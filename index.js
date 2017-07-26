@@ -70,7 +70,7 @@ angular.module("weatherApp", [])
 
   forecastWeather.getForecastWeather = function(lat, lon) {
     var apiKey = '0dd8bb79c45efccc5e6993ee4b787e33';
-    var forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&cnt=5&units=imperial';
+    var forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&units=imperial';
     var deferred = $q.defer();
       
 
@@ -116,7 +116,6 @@ angular.module("weatherApp", [])
   })
     .then(function() {
       makeWeatherRequest.getCurrentWeather($scope.lat, $scope.lon).then(locationData => {
-        console.log(locationData);
         $scope.weatherTemp = Math.floor(locationData.data.main.temp);
         $scope.tempMax = Math.floor(locationData.data.main.temp_max);
         $scope.tempMin = Math.floor(locationData.data.main.temp_min);
@@ -128,18 +127,30 @@ angular.module("weatherApp", [])
 
     .then(function() {
       makeForecastRequest.getForecastWeather($scope.lat, $scope.lon).then(locationData => {
-        var weatherData = locationData.data.list;
-        console.log(weatherData);
-        // forecastDatas.forecast = function(data) {
-        //   this.data = data;
-        // };
-        // forecastDatas.forecast.prototype.hasOwnProperty.toDay = function(date) {
-        //   return new moment(date).format('ddd');
-        // };
-        $scope.forecastDatas = locationData.data.list;
+        $scope.forecastDatas = locationData.data;
+        var forecastDatas = locationData.data.list;
+        $scope.forecastedDay = [];
+        for (var i = 0; i < forecastDatas.length; i+=8) {
+          $scope.forecastedDay.push(forecastDatas[i]);
+        }
+        
+        $scope.days = [];
+        for (i = 0; i < $scope.forecastedDay.length; i++) {
+          $scope.days.push({day: moment($scope.forecastedDay[i].dt_txt).format('ddd').toUpperCase() });
+        }
+
+        $scope.repeatData = $scope.forecastedDay.map(function(value, index) {
+          return {
+              data: value,
+              value: $scope.days[index]
+          };
+        });
+
+        console.log($scope.repeatData);
+        console.log($scope.days);
+        console.log($scope.forecastedDay);
         console.log($scope.forecastDatas);
       });
-
     });
     });
 }]);
